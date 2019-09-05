@@ -1,0 +1,4 @@
+DROP DATABASE IF EXISTS color_hex;
+CREATE DATABASE color_hex;
+USE color_hex;
+DROP TABLE IF EXISTS color;
