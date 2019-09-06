@@ -1,53 +1,77 @@
-import React, { Component }  from 'react';
-import Container from "../Container";
-import ColorCard from ".//ColorCard";
-import Row from "../Row";
-import Column from "../Column";
-import Wrapper from "./Wrapper";
+import React, { useState, useEffect }  from 'react';
+import Pagination from './Pagination'
+import axios from 'axios';
+import ColorCard from "./ColorCard";
+import Container from '../Container';
+import Row from 'react-bootstrap/Row';
+import Column from '../Column';
+import SideBar from './SideBar';
+import '../App.css';
 
 
-class ColorSwatch extends Component{
-    state={
-        colors:[]
-    };
 
-    componentDidMount(){
-        this.getColors();
-    }
+const ColorSwatch = () => {
+    const [colors, setColors] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [colorsPerPage] = useState(104)
 
-    getColors(){
-        fetch('/api/colors',{
-            method: 'GET'
-        }).then(response =>{ return response.json()})
-        .then(data =>{
-            this.setState({
-                colors: data
-            })
-            
-        }).catch(err =>{
-            console.log('error' + err)
-        })
-    }
     
-    render(){
+    useEffect(() => {
+        const fetchColors = async () => {
+          setLoading(true);
+          const res = await axios.get('api/colors');
+          setColors(res.data);
+          setLoading(false);
+        };
+        
+        fetchColors();
+    }, []);
+
+    
+    // Get current colors
+    const indexOfLastColor = currentPage * colorsPerPage;
+    const indexOfFirstColor = indexOfLastColor - colorsPerPage;
+    const currentColors = colors.slice(indexOfFirstColor, indexOfLastColor);
+
+    // Change page
+    const paginate = pageNumber => setCurrentPage(pageNumber);    
+    
+    
         return (
-            <Wrapper>
-                <Container>
-                    <Row>
-                        {this.state.colors.map(color => (
-                        <Column size="md-3 sm-6">
-                        <ColorCard
-                            key = {color.key}
-                            color={color.color}
-                            hex={color.hex}
-                            />
-                        </Column>
-                        ))}
-                    </Row>
-                </Container>
-            </Wrapper>
-        )
-    }
+           <div> 
+            
+            <Container  >
+            
+           
+                <Row className='randomNumber'>
+                    <Column  style={{backgroundColor:'grey'}} size="md-3 sm-6">
+                        <SideBar/>
+                    </Column>
+                </Row>
+                
+                <Row style={{justifyContent:'right'}}>
+                    <ColorCard
+                        colors = {currentColors}
+                        loading ={loading}>
+                    </ColorCard>
+                </Row>
+            </Container>
+            
+            <Container>
+            
+                <Row style={{justifyContent:'right'}}>
+                    <Pagination
+                        colorsPerPage={colorsPerPage}
+                        totalColors={colors.length}
+                        paginate={paginate}
+                    > </Pagination>
+                </Row>
+            
+        </Container>
+        </div>     
+        );
 }
+
 
 export default ColorSwatch;
