@@ -11,13 +11,11 @@ import Modal from "react-bootstrap/Modal";
 const ColorCard = ({colors, loading}) => {
     const[show, setShow] = useState(false);
     
+    
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     
-    const hex = (colors)  => {
-      console.log(colors);
-
-    };
+    
     
 
     if(loading){
@@ -33,7 +31,7 @@ const ColorCard = ({colors, loading}) => {
           
               {colors.map(color=>(
                    
-                <Card onClick={hex} onClick={handleShow} style={{backgroundColor:color.hex}} >
+                <Card id={color.hex} onClick={handleShow} style={{backgroundColor:color.hex}} >
                   <Card.Header style={{backgroundColor: "#FFFFFF" }}>{color.hex}</Card.Header>
                 </Card>
                 
@@ -43,13 +41,13 @@ const ColorCard = ({colors, loading}) => {
       </Container>
       
       
-      {colors.map(color=>(
+      {colors.map(color =>(
       
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>{color.color}</Modal.Title>
           </Modal.Header>
-          <Card  style={{backgroundColor:color.hex}}></Card>
+          <Card id={color.hex}  style={{backgroundColor:color.hex}}></Card>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close

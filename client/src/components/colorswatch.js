@@ -10,11 +10,15 @@ import '../App.css';
 
 
 
+
 const ColorSwatch = () => {
     const [colors, setColors] = useState([])
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [colorsPerPage] = useState(104)
+    const[setShow] = useState(false);
+    
+    const handleShow = () => setShow(true);
 
     
     useEffect(() => {
@@ -22,12 +26,12 @@ const ColorSwatch = () => {
           setLoading(true);
           const res = await axios.get('api/colors');
           setColors(res.data);
+          
           setLoading(false);
         };
         
         fetchColors();
     }, []);
-
     
     // Get current colors
     const indexOfLastColor = currentPage * colorsPerPage;
@@ -52,6 +56,7 @@ const ColorSwatch = () => {
                 
                 <Row style={{justifyContent:'right'}}>
                     <ColorCard
+                        onClick={handleShow}
                         colors = {currentColors}
                         loading ={loading}>
                     </ColorCard>
@@ -69,6 +74,9 @@ const ColorSwatch = () => {
                 </Row>
             
         </Container>
+            
+
+
         </div>     
         );
 }
