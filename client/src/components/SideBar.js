@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -13,43 +13,34 @@ const SideBar = () => {
     const [randomColor,setRandomColor] = useState([]);
     
     
-   
+    const randomNumber = () => {
+        const index = Math.ceil(Math.random() * 1054);
         
-    
-    
-    useEffect(() => {
-        const randomNumber = () => {
-            const index = Math.ceil(Math.random() * 1054);
-            
-            return index
-        } 
-        
-        let index = randomNumber()
         const fetchColors = async () => {
           
-          const res = await axios.get(`api/colors/${index}`);
+            const res = await axios.get(`api/colors/${index}`);
+            
+            let randomColor = res.data;
+            
+            setRandomColor(randomColor);
+            
+          };
           
-          let randomColor = res.data;
-          
-          setRandomColor(randomColor);
-          
-        };
+          fetchColors();
         
-        fetchColors();
-    }, []);
-    
-    
-    
+        handleShow()
+        return index
+    } 
 
   return (
     
             <div style={{backgroundColor: 'grey'}}>
-            <Button variant="primary" className='randomColorButton'  onClick={handleShow}  >Random Color</Button>
+            <Button variant="primary" className='randomColorButton'  onClick={randomNumber}  >Random Color</Button>
             
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{randomColor.color}</Modal.Title>
+                        <Modal.Title>{randomColor.hex} </Modal.Title>
                     </Modal.Header>
                             <Card  style={{backgroundColor: randomColor.hex}}></Card>
                     <Modal.Footer>
